@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
+import subprocess
 
 #Funktsioon, mis laadib andmed SQLite andmebaasist ja sisestab need Treeview tabelisse
 def load_data_from_db(tree):
@@ -45,9 +46,9 @@ def load_data_from_db(tree, search_query=""):
 
     # Tee päring andmebaasist andmete toomiseks
     if search_query:
-        cursor.execute("SELECT title, director, release_year, genre, duration, rating, language, country, description FROM movies WHERE title LIKE ?", ('%' + search_query + '%',))
+        cursor.execute("SELECT eesnimi, perenimi, email, tel, profiilipilt FROM users WHERE eesnimi LIKE ?", ('%' + search_query + '%',))
     else:
-        cursor.execute("SELECT title, director, release_year, genre, duration, rating, language, country, description FROM movies")
+        cursor.execute("SELECT eesnimi, perenimi, email, tel, profiilipilt FROM users")
 
     rows = cursor.fetchall()
 
@@ -74,6 +75,14 @@ search_entry.pack(side=tk.LEFT, padx=10)
 
 search_button = tk.Button(search_frame, text="Otsi", command=on_search)
 search_button.pack(side=tk.LEFT)
+
+def lisa_andmeid():
+    # Käivita ul19.py skript
+    subprocess.Popen(["python", "ul19.py"], shell=True)
+
+
+lisa_button = tk.Button(root, text="Lisa andmeid", command=lisa_andmeid)
+lisa_button.pack(pady=10)
 
 
 # Loo tabel (Treeview) andmete kuvamiseks
